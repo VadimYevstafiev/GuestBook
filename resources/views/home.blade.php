@@ -17,6 +17,6 @@
             @endauth
         @endif
 
-        <x-note-index :notes="$notes" />     
+        <x-note-index :$items />     
     </div>
 </x-app-layout>

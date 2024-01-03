@@ -10,8 +10,15 @@ class NotesController extends Controller
 {
     public function home(HomeRequest $request, NoteRepositoryContract $repository)
     {   
-        $notes = $repository->index(config('custom.notes.index.count_rows'), $request);
+        $items = $repository->index(config('custom.notes.index.count_rows'), $request);
 
-        return view('dashboard', compact('notes'));
+        return view('home', compact('items'));
+    }
+
+    public function heads(Request $request, NoteRepositoryContract $repository)
+    {
+        $heads = $repository->heads(config('custom.notes.index.count_rows'), $request);
+
+        return view('heads', compact('heads'));
     }
 }

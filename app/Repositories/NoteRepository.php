@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Note;
+use App\Models\User;
 use App\Repositories\Contracts\NoteRepositoryContract;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -34,13 +35,37 @@ class NoteRepository implements NoteRepositoryContract
         );
     }
 
+    public function heads(int $perPage, Request $request): LengthAwarePaginator
+    {
+        $param = array_filter($request->all(), function($key) {
+            return $key !== 'page';
+        }, ARRAY_FILTER_USE_KEY);
+
+        $param = (!empty($param))
+            ? $param
+            : ['user_name' => 'asc'];
+
+        $column = array_key_first($param);
+        $order = array_shift($param);
+
+        $column = ($column === 'created_at')
+            ? $column
+            : User::select($column)
+                ->whereColumn('author_id', 'users.id')
+                ->orderBy($column, $order)
+                ->limit(1);
+
+        return Note::whereNull('parent_id')
+            ->with('author')
+            ->orderBy($column, $order)
+            ->paginate($perPage)->withQueryString();
+    }
+
     protected function getChilds(Note $note, int $deep)
     {
         $result = [[
-            'id' => $note->id,
-            'user_name' => $note->author->user_name,
-            'content' =>$note->content,
-            'deep' =>$deep
+            'note' => $note, 
+            'deep' => $deep
         ]];
         if (count($note->childs)) {
             $deep++;

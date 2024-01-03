@@ -8,4 +8,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 interface NoteRepositoryContract
 {
     public function index(int $perPage, Request $request): LengthAwarePaginator;
+
+    public function heads(int $perPage, Request $request): LengthAwarePaginator;
 }

@@ -15,16 +15,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [NotesController::class, 'home'])->name('welcome');
+Route::controller(NotesController::class)->group(function() {
+    Route::name('home')->group(function() {
+        Route::get('/', 'home');
+        Route::get('/home', 'home');
+    });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::middleware(['auth', 'verified'])->group(function() {
+        Route::get('/heads', 'heads')->name('heads');
+    });
+});
+
+Route::controller(ProfileController::class)->middleware('auth')->group(function () {
+    Route::get('/profile', 'edit')->name('profile.edit');
+    Route::patch('/profile', 'update')->name('profile.update');
+    Route::delete('/profile', 'destroy')->name('profile.destroy');
 });
 
 require __DIR__.'/auth.php';
-
-Route::middleware(['auth', 'verified'])->group(function() {
-    Route::get('/dashboard', [NotesController::class, 'home'])->name('dashboard');
-});
