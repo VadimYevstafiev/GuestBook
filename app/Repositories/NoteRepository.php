@@ -61,6 +61,15 @@ class NoteRepository implements NoteRepositoryContract
             ->paginate($perPage)->withQueryString();
     }
 
+    public function getParent(Request $request): ?Note
+    {
+        $params = $request->all();
+        
+        return isset($params['parent'])
+            ? Note::where('id', $params['parent'])->with('author')->first()
+            : null;
+    }
+
     protected function getChilds(Note $note, int $deep)
     {
         $result = [[

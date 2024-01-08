@@ -15,14 +15,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::redirect('/', '/home');
+
 Route::controller(NotesController::class)->group(function() {
-    Route::name('home')->group(function() {
-        Route::get('/', 'home');
-        Route::get('/home', 'home');
-    });
+    Route::get('/home', 'home')->name('home');
 
     Route::middleware(['auth', 'verified'])->group(function() {
         Route::get('/heads', 'heads')->name('heads');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
     });
 });
 
