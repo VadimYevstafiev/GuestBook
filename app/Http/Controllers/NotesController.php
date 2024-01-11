@@ -34,7 +34,9 @@ class NotesController extends Controller
 
     public function store(CreateNoteRequest $request)
     {   
-        $this->repository->create($request);
+        return $this->repository->create($request)
+            ? redirect()->route('home')
+            : redirect()->back()->withInput();
 
     }
 }

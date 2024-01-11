@@ -20,12 +20,16 @@ class NoteRepository implements NoteRepositoryContract
 {
     public function create(CreateNoteRequest $request): bool
     {
-
         try {
             DB::beginTransaction();
 
-            $data = collect($request->validated())->put('author_id', auth()->user()->id);
-            $note = Note::create($data->except(['g-recaptcha-response', 'files'])->toArray());
+            $data = $request->validated();
+
+            $data = collect($data)
+                ->put('author_id', auth()->user()->id)
+                ->put('parent_id', json_decode($data['parent'], true)['id']);
+
+                $note = Note::create($data->except(['parent', 'files'])->toArray());
 
             if (!is_null($data->get('files'))) {
                 foreach ($data->get('files') as $file) {
@@ -112,7 +116,9 @@ class NoteRepository implements NoteRepositoryContract
         $params = $request->all();
         
         return isset($params['parent'])
-            ? Note::where('id', $params['parent'])->with('author')->first()
+            ? Note::where('id', $params['parent'])
+                ->with('author:id,email,user_name')
+                ->first()                
             : null;
     }
 

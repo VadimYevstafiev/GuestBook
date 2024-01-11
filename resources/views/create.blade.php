@@ -1,3 +1,7 @@
+@php
+    $parent = old('parent') ?? $parent;
+    $content = old('content');
+@endphp
 <x-app-layout>
     <div class="flex-1 h-screen overflow-y-auto">
         @include('layouts.navigation')
@@ -12,13 +16,13 @@
                     <h1 class= "text-2xl font-bold mb-6 text-center">Add note to:</h1>
                     <div class="mb-4">
                         <x-note-body :note="$parent" />
-                        <input type="hidden" id="parent_id" name="parent_id" value="{{ $parent->id }}">
+                        <input type="hidden" id="parent" name="parent" value="{{ $parent }}">
                     </div>
                 @else
                     <h1 class= "text-2xl font-bold mb-6 text-center">Create new note</h1>
                 @endif
 
-                <x-note-input :errors="$errors" />
+                <x-note-input :errors="$errors" :content="$content"  />
 
                 <x-google-recaptha :errors="$errors" />
 

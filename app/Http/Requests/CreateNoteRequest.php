@@ -26,8 +26,8 @@ class CreateNoteRequest extends FormRequest
     {
         return [
             'content' => ['required', 'string',  new CheckContent],
-            'parent_id' => ['nullable', 'string', "exists:App\Models\Note,id"],
-            'g-recaptcha-response' => ['required', new CheckRecaptcha],
+            'parent' => ['nullable', 'json'],
+            'g-recaptcha-response' => ['required', 'exclude', new CheckRecaptcha],
             'files' => ['nullable', new CheckFiles]
         ];
     }
