@@ -2,16 +2,62 @@
 
 namespace App\Repositories;
 
+use App\Http\Requests\CreateNoteRequest;
 use App\Models\Note;
 use App\Models\User;
+use App\Repositories\Contracts\FileRepositoryContract;
+use App\Repositories\Contracts\ImageRepositoryContract;
 use App\Repositories\Contracts\NoteRepositoryContract;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 
 class NoteRepository implements NoteRepositoryContract
 {
+    public function create(CreateNoteRequest $request): bool
+    {
+
+        try {
+            DB::beginTransaction();
+
+            $data = collect($request->validated())->put('author_id', auth()->user()->id);
+            $note = Note::create($data->except(['g-recaptcha-response', 'files'])->toArray());
+
+            if (!is_null($data->get('files'))) {
+                foreach ($data->get('files') as $file) {
+                    $type = explode('/', $file->getClientMimeType());
+                    $type = array_shift($type);
+
+                    if ($type === 'image') {
+                        $fileRepository = App::make(ImageRepositoryContract::class);
+                        $fileRepository->setImageSize(
+                            config('custom.notes.images.file.size.height'),
+                            config('custom.notes.images.file.size.width'),
+                        );
+                        $relation = 'images';
+                        $path = config('custom.notes.images.dir') . '/' . $note->id;
+                    } else {
+                        $fileRepository = App::make(FileRepositoryContract::class);
+                        $relation = 'textFiles';
+                        $path = config('custom.notes.text-files.dir') . '/' . $note->id;
+                    }
+
+                    $fileRepository->attach($note, $relation, $file, $path);
+                }
+            }
+             
+            DB::commit();
+            return true;
+        } catch(Exception $exception) {
+            DB::rollBack();
+            return false;
+        }
+    }
+
     public function index(int $perPage, Request $request): LengthAwarePaginator
     {
         $notes = Note::whereNull('parent_id')

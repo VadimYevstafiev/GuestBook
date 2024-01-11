@@ -9,29 +9,32 @@ use Illuminate\Http\Request;
 
 class NotesController extends Controller
 {
-    public function home(HomeRequest $request, NoteRepositoryContract $repository)
+    public function __construct(protected NoteRepositoryContract $repository) {}
+
+    public function home(HomeRequest $request)
     {   
-        $items = $repository->index(config('custom.notes.index.count_rows'), $request);
+        $items = $this->repository->index(config('custom.notes.index.count_rows'), $request);
 
         return view('home', compact('items'));
     }
 
-    public function heads(Request $request, NoteRepositoryContract $repository)
+    public function heads(Request $request)
     {
-        $heads = $repository->heads(config('custom.notes.index.count_rows'), $request);
+        $heads = $this->repository->heads(config('custom.notes.index.count_rows'), $request);
 
         return view('heads', compact('heads'));
     }
 
-    public function create(Request $request, NoteRepositoryContract $repository)
+    public function create(Request $request)
     {
-        $parent = $repository->getParent($request);
+        $parent = $this->repository->getParent($request);
 
         return view('create', compact('parent'));
     }
 
-    public function store(CreateNoteRequest $request, NoteRepositoryContract $repository)
-    {
-        dd($request);
+    public function store(CreateNoteRequest $request)
+    {   
+        $this->repository->create($request);
+
     }
 }

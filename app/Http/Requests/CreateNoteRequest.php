@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\CheckCaptcha;
-use App\Rules\CheckContent;
+use App\Rules\NoteRequest\CheckContent;
+use App\Rules\NoteRequest\CheckFiles;
+use App\Rules\NoteRequest\CheckRecaptcha;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateNoteRequest extends FormRequest
@@ -26,7 +27,20 @@ class CreateNoteRequest extends FormRequest
         return [
             'content' => ['required', 'string',  new CheckContent],
             'parent_id' => ['nullable', 'string', "exists:App\Models\Note,id"],
-            // 'g-recaptcha-response' => ['required', new CheckCaptcha],
+            'g-recaptcha-response' => ['required', new CheckRecaptcha],
+            'files' => ['nullable', new CheckFiles]
+        ];
+    }
+
+            /**
+     * Get custom messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'g-recaptcha-response.required' => 'Enter the captcha',
         ];
     }
 }

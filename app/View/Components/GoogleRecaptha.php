@@ -7,14 +7,13 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\Component;
 
-class NoteInput extends Component
+class GoogleRecaptha extends Component
 {
     /**
      * Create a new component instance.
      */
     public function __construct(
         public ViewErrorBag $errors,
-        public ?string $content = null
     ) {}
 
     /**
@@ -22,6 +21,6 @@ class NoteInput extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.note-input');
+        return view('components.google-recaptha');
     }
 }
