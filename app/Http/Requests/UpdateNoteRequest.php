@@ -7,7 +7,7 @@ use App\Rules\NoteRequest\CheckFiles;
 use App\Rules\NoteRequest\CheckRecaptcha;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateNoteRequest extends FormRequest
+class UpdateNoteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +26,6 @@ class CreateNoteRequest extends FormRequest
     {
         return [
             'content' => ['required', 'string',  new CheckContent],
-            'parent_id' => ['nullable', 'string', "exists:App\Models\Note,id"],
             'g-recaptcha-response' => ['required', 'exclude', new CheckRecaptcha],
             'files' => ['nullable', new CheckFiles]
         ];

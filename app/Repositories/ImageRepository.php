@@ -2,24 +2,17 @@
 
 namespace App\Repositories;
 
-use App\Repositories\Contracts\ImageRepositoryContract;
-use App\Services\Contracts\FileStorageServiceContract;
+use App\Repositories\Contracts\FileRepositoryContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 
-class ImageRepository extends FileRepository implements ImageRepositoryContract
+class ImageRepository extends FileRepository implements FileRepositoryContract
 {
-    public int $height;
-    public int $width;
 
-    public function setImageSize(int $height, int $width): void
+    public function attach(Model $model, string $type, UploadedFile $file): void
     {
-        $this->width = $width;
-        $this->height = $height;
-    }
-
-    public function attach(Model $model, string $relation, UploadedFile $file, ?string $path = null): void
-    {
+        $table = $model->getTable();
+        
         $tmp = $file->getRealPath();
             
         \Tinify\setKey(config('custom.tinify.key'));
@@ -27,12 +20,12 @@ class ImageRepository extends FileRepository implements ImageRepositoryContract
         $source = \Tinify\fromFile($tmp);
         $resized = $source->resize(array(
             "method" => "fit",
-            "width" => $this->width,
-            "height" => $this->height
+            "width" => config("custom.{$table}.files.{$type}.file.size.width"),
+            "height" => config("custom.{$table}.files.{$type}.file.size.height")
         ));
         unlink($tmp);
         $resized->toFile($tmp);
         
-        parent::attach($model, $relation, $file, $path);
+        parent::attach($model, $type, $file);
     }
 }

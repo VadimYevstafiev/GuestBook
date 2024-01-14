@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateNoteRequest;
 use App\Http\Requests\HomeRequest;
+use App\Http\Requests\UpdateNoteRequest;
+use App\Models\Note;
 use App\Repositories\Contracts\NoteRepositoryContract;
 use Illuminate\Http\Request;
 
@@ -37,6 +39,26 @@ class NotesController extends Controller
         return $this->repository->create($request)
             ? redirect()->route('home')
             : redirect()->back()->withInput();
+    }
 
+    public function edit(string $id)
+    {
+        $note = $this->repository->getNote($id);
+        
+        return view('edit', compact('note'));
+    }
+
+    public function update(UpdateNoteRequest $request, Note $note)
+    {
+        return $this->repository->update($request, $note)
+        ? redirect()->route('edit', $note)
+        : redirect()->back()->withInput();
+    }
+
+    public function destroy(Note $note)
+    {
+        return $this->repository->destroy($note)
+            ? redirect()->back()
+            : abort(403);
     }
 }

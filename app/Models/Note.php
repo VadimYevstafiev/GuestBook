@@ -43,7 +43,7 @@ class Note extends Model
         return $this->morphMany(Image::class, 'imageable');
     }
 
-    public function textFiles(): HasMany
+    public function text_files(): HasMany
     {
         return $this->hasMany(TextFile::class);
     }

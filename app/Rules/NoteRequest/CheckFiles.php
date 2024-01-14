@@ -28,7 +28,7 @@ class CheckFiles implements ValidationRule
             }
 
             if ($type === 'text') {
-                if ($file->getSize() > config("custom.notes.text-files.file.size")) {
+                if ($file->getSize() > config("custom.notes.files.text.file.size")) {
                     $fail("Invalid size {$file->getClientOriginalName()} file");
                 }
             }

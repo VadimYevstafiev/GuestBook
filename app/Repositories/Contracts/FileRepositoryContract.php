@@ -7,6 +7,8 @@ use Illuminate\Http\UploadedFile;
 
 interface FileRepositoryContract
 {
-    public function attach(Model $model, string $relation, UploadedFile $file, ?string $path = null): void;
+    public function attach(Model $model, string $type, UploadedFile $file): void;
+
+    public function deleteDirectories(string $type, int $id): void;
 }
  

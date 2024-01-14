@@ -3,17 +3,16 @@
 namespace App\Repositories;
 
 use App\Http\Requests\CreateNoteRequest;
+use App\Http\Requests\UpdateNoteRequest;
 use App\Models\Note;
 use App\Models\User;
 use App\Repositories\Contracts\FileRepositoryContract;
-use App\Repositories\Contracts\ImageRepositoryContract;
 use App\Repositories\Contracts\NoteRepositoryContract;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 
 class NoteRepository implements NoteRepositoryContract
@@ -23,43 +22,64 @@ class NoteRepository implements NoteRepositoryContract
         try {
             DB::beginTransaction();
 
-            $data = $request->validated();
+            $data = collect($request->validated())
+                ->put('author_id', auth()->user()->id);
 
-            $data = collect($data)
-                ->put('author_id', auth()->user()->id)
-                ->put('parent_id', json_decode($data['parent'], true)['id']);
+            $note = Note::create($data->except(['files'])->toArray());
+            $this->attachFiles($note, $data);
 
-                $note = Note::create($data->except(['parent', 'files'])->toArray());
+            DB::commit();
+            return true;
+        } catch(Exception $exception) {
+            DB::rollBack();
+            logs()->warning($exception);
+            return false;
+        }
+    }
 
-            if (!is_null($data->get('files'))) {
-                foreach ($data->get('files') as $file) {
-                    $type = explode('/', $file->getClientMimeType());
-                    $type = array_shift($type);
+    public function update(UpdateNoteRequest $request, Note $note): bool
+    {
+        try {
+            DB::beginTransaction();
 
-                    if ($type === 'image') {
-                        $fileRepository = App::make(ImageRepositoryContract::class);
-                        $fileRepository->setImageSize(
-                            config('custom.notes.images.file.size.height'),
-                            config('custom.notes.images.file.size.width'),
-                        );
-                        $relation = 'images';
-                        $path = config('custom.notes.images.dir') . '/' . $note->id;
-                    } else {
-                        $fileRepository = App::make(FileRepositoryContract::class);
-                        $relation = 'textFiles';
-                        $path = config('custom.notes.text-files.dir') . '/' . $note->id;
-                    }
+            $data = collect($request->validated())
+                ->put('author_id', auth()->user()->id);
 
-                    $fileRepository->attach($note, $relation, $file, $path);
-                }
-            }
+            $note->update($data->except(['files'])->toArray());
+            $this->attachFiles($note, $data);
              
             DB::commit();
             return true;
         } catch(Exception $exception) {
             DB::rollBack();
+            logs()->warning($exception);
             return false;
-        }
+        }  
+    }
+
+    public function destroy(Note $note): bool
+    {
+        try {
+            DB::beginTransaction();
+
+            $id = $note->id;
+            $type = $note->getTable();
+
+            $this->detachChilds($note);
+            $this->detachImages($note);
+
+            $note->delete();            
+            DB::commit();
+
+            $service = app()->make(FileRepositoryContract::class);
+            $service->deleteDirectories($type, $id);
+
+            return true;
+        } catch(Exception $exception) {
+            DB::rollBack();
+            logs()->warning($exception);
+            return false;
+        }  
     }
 
     public function index(int $perPage, Request $request): LengthAwarePaginator
@@ -122,7 +142,17 @@ class NoteRepository implements NoteRepositoryContract
             : null;
     }
 
-    protected function getChilds(Note $note, int $deep)
+    public function getNote(string $id): Note
+    {
+        return Note::where('id', $id)
+            ->with('author:id,email,user_name', 
+                'parent.author:id,email,user_name',
+                'images',
+                'text_files')
+            ->first();
+    }
+
+    protected function getChilds(Note $note, int $deep): array
     {
         $result = [[
             'note' => $note, 
@@ -135,5 +165,36 @@ class NoteRepository implements NoteRepositoryContract
             }
         }
         return $result;
+    }
+
+    protected function attachFiles(Note $note, Collection $data): void
+    {
+        if (!is_null($data->get('files'))) {
+            foreach ($data->get('files') as $file) {
+                $type = explode('/', $file->getClientMimeType());
+                $type = array_shift($type);
+
+                $fileRepository = app()->make('fileRepository-selector-' . $type);
+                $fileRepository->attach($note, $type, $file);
+            }
+        }
+    }
+
+    protected function detachChilds(Note $note): void
+    {
+        if ($note->childs()->exists()) {
+            $newParentId = null;
+            if ($note->parent()->exists()) {
+                $newParentId = $note->parent()->first()->id;
+            }
+            $note->childs()->update(['parent_id' => $newParentId]);
+        }
+    }
+
+    protected function detachImages(Note $note): void
+    {
+        if ($note->images->count() > 0) {
+            $note->images->each->delete();
+        }
     }
 }

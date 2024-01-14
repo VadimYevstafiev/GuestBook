@@ -1,5 +1,10 @@
 @php
-    $parent = old('parent') ?? $parent;
+    $parent = is_null(old('parent_id')) 
+        ? $parent
+        : App\Models\Note::where('id', old('parent_id'))
+            ->with('author:id,email,user_name')
+            ->first();
+
     $content = old('content');
 @endphp
 <x-app-layout>
@@ -16,7 +21,7 @@
                     <h1 class= "text-2xl font-bold mb-6 text-center">Add note to:</h1>
                     <div class="mb-4">
                         <x-note-body :note="$parent" />
-                        <input type="hidden" id="parent" name="parent" value="{{ $parent }}">
+                        <input type="hidden" id="parent_id" name="parent_id" value="{{ $parent->id }}">
                     </div>
                 @else
                     <h1 class= "text-2xl font-bold mb-6 text-center">Create new note</h1>

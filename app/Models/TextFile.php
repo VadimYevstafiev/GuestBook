@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasUrl;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TextFile extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUrl;
 
     /**
      * The attributes that are mass assignable.

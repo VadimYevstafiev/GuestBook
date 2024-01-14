@@ -3,15 +3,16 @@
 return [
     'users' => [
         'seeder' => ['count_rows' => 5],
-        'avatar' => [
-            'dir' => 'users/avatars',
-            'file' => [
-                'type' => 'image',
-                'size' => [
-                    'width' => 70,
-                    'height' => 70
-                ]
-
+        'files' => [
+            'image' => [
+                'relation' => 'avatar',
+                'dir' => 'avatars',
+                'file' => [
+                    'size' => [
+                        'width' => 320,
+                        'height' => 240
+                    ]
+                ],
             ],
         ],
     ],
@@ -21,21 +22,23 @@ return [
             'count_rows' => 25,
             'left_step' => 4
         ],
-        'images' => [
-            'dir' => 'notes/images',
-            'file' => [
-                'type' => 'image',
-                'size' => [
-                    'width' => 320,
-                    'height' => 240
-                ]
+        'files' => [
+            'image' => [
+                'relation' => 'images',
+                'dir' => 'images',
+                'file' => [
+                    'size' => [
+                        'width' => 320,
+                        'height' => 240
+                    ]
+                ],
             ],
-        ],
-        'text-files' => [
-            'dir' => 'notes/text-files',
-            'file' => [
-                'type' => 'text',
-                'size' => 102400
+            'text' => [
+                'relation' => 'text_files',
+                'dir' => 'text_files',
+                'file' => [
+                    'size' => 102400
+                ],
             ],
         ],
     ],

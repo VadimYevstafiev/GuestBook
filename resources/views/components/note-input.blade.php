@@ -39,6 +39,7 @@
             required>{{ $content }}</textarea>
         <x-input-error :messages="$errors->get('content')" class="mt-2" />
     </div>
+
 </div>
 <div class="flex justify-center">
     <div class="files-wrapper mb-4 w-1/2">
