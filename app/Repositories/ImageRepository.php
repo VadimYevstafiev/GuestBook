@@ -14,15 +14,26 @@ class ImageRepository extends FileRepository implements FileRepositoryContract
         // $table = $model->getTable();
         
         // $tmp = $file->getRealPath();
-            
+
+        // list($width, $height) = getimagesize($tmp);
+
+        // $config = config("custom.{$table}.files.{$type}.file.size");
+
+
+        // $config['width'] = $width > $config['width']
+        //     ? $config['width']
+        //     : $width;
+        
+        // $config['height'] = $height > $config['height']
+        //     ? $config['height']
+        //     : $height;
+        
+        // $config['method'] = 'fit';
+
         // \Tinify\setKey(config('custom.tinify.key'));
 
         // $source = \Tinify\fromFile($tmp);
-        // $resized = $source->resize(array(
-        //     "method" => "fit",
-        //     "width" => config("custom.{$table}.files.{$type}.file.size.width"),
-        //     "height" => config("custom.{$table}.files.{$type}.file.size.height")
-        // ));
+        // $resized = $source->resize($config);
         // unlink($tmp);
         // $resized->toFile($tmp);
         

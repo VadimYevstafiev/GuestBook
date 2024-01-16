@@ -31,7 +31,7 @@ class PicsumImageFaker implements ImageFakerContract
     {
         $result = clone $this;
         $this->reset();
-        return $result->getImage();
+        return $result->getImage($result->extension);
     }
 
     public function id(int $id): ImageFakerContract
@@ -67,9 +67,7 @@ class PicsumImageFaker implements ImageFakerContract
 
     public function extension(string $extension = null): ImageFakerContract
     {
-        $extension === 'webp'
-            ? $this->extension = '.webp'
-            : $this->extension = '.jpg';
+        if ($extension === 'webp') $this->extension = 'webp';
         return $this;
     }
 
@@ -79,7 +77,7 @@ class PicsumImageFaker implements ImageFakerContract
         $this->width = null;
         $this->height = null;
         $this->options = [];
-        $this->extension = null;
+        $this->extension = 'jpg';
     }
 
     protected function getUrl(): string
@@ -100,18 +98,19 @@ class PicsumImageFaker implements ImageFakerContract
             $result .= implode('&', $this->options);
         }
 
-        if (!is_null($this->extension)) $result .= "{$this->extension}";
+        if (!is_null($this->extension)) $result .= ".{$this->extension}";
         return $result;
     }
 
-    public function getImage(): UploadedFile
+    public function getImage(string $extension): UploadedFile
     {
         $tmp = stream_get_meta_data(tmpfile())['uri'];
         file_put_contents($tmp, file_get_contents($this->getUrl()));
         $file = new File($tmp);
+
         return new UploadedFile(
             $file->getPathname(),
-            $file->getFilename(),
+            ($file->getFilename() . '.' . $extension),
             $file->getMimeType(),
         );
     }

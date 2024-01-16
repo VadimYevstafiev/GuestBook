@@ -86,7 +86,7 @@ class NoteRepository implements NoteRepositoryContract
     public function index(int $perPage, Request $request): LengthAwarePaginator
     {
         $notes = Note::whereNull('parent_id')
-            ->with('author', 'childs')
+            ->with('author.avatar', 'childs')
             ->get();
         
         $result = [];
@@ -196,6 +196,13 @@ class NoteRepository implements NoteRepositoryContract
     {
         if ($note->images->count() > 0) {
             $note->images->each->delete();
+        }
+    }
+
+    protected function detachTextFies(Note $note): void
+    {
+        if ($note->text_files->count() > 0) {
+            $note->text_files->each->delete();
         }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Repositories\Contracts\UserRepositoryContract;
 use App\Models\User;
+use App\Repositories\Contracts\FileRepositoryContract;
 use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
@@ -40,5 +41,29 @@ class UserRepository implements UserRepositoryContract
             logs()->warning($exception);
             return false;
         }
+    }
+    
+    public function destroy(User $user): bool
+    {
+        try {
+            DB::beginTransaction();
+
+            $id = $user->id;
+            $type = $user->getTable();
+
+            $user->avatar()->delete();
+
+            $user->delete();            
+            DB::commit();
+
+            $service = app()->make(FileRepositoryContract::class);
+            $service->deleteDirectories($type, $id);
+
+            return true;
+        } catch(Exception $exception) {
+            DB::rollBack();
+            logs()->warning($exception);
+            return false;
+        }  
     }
 }

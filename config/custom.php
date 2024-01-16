@@ -18,8 +18,8 @@ return [
                 'dir' => 'avatars',
                 'file' => [
                     'size' => [
-                        'width' => 70,
-                        'height' => 70
+                        'width' => 80,
+                        'height' => 80
                     ]
                 ],
             ],
