@@ -1,5 +1,10 @@
+@push('scripts')
+    <script type="module" src="{{ asset('resources/js/components/avatar-preview.js') }}"></script>
+    <script type="module" src="{{ asset('resources/js/components/noteInput/files-preview.js') }}"></script>
+@endpush
+
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
         @csrf
 
         <div class="flex items-center justify-end mt-4">
@@ -26,6 +31,25 @@
         <div class="mt-4">
             <x-input-label for="home_page" :value="__('Home Page')" />
             <x-text-input id="home_page" class="block mt-1 w-full" type="text" name="home_page" :value="old('home_page')"  />
+        </div>
+
+        <div class="flex justify-center">
+            <div class="avatar-preview mt-4 w-1/2">
+            </div>
+        </div>
+
+        <!-- Avatar -->
+        <div class="mt-4">
+            <x-input-label for="avatar" :value="__('Avatar')" />            
+            <div class="w-full mt-1 flex justify-start">
+                <label type="button" id="setting"
+                    class="px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white text-center uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-offset-2 transition ease-in-out duration-150 mr-4">
+                    Select file
+                    <input class="hidden" type="file" id="avatar" name="avatar"> 
+                </label>
+
+            </div>
+            <x-input-error :messages="$errors->get('avatar')" class="mt-2" />
         </div>
 
         <!-- Password -->

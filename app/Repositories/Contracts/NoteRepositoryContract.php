@@ -6,6 +6,7 @@ use App\Http\Requests\CreateNoteRequest;
 use App\Http\Requests\UpdateNoteRequest;
 use App\Models\Note;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 interface NoteRepositoryContract

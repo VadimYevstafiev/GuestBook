@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use App\Models\User;
+use App\Rules\NoteRequest\CheckFiles;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
@@ -27,6 +28,7 @@ class RegisterRequest extends FormRequest
             'user_name' => ['required', 'string', 'max:35'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'home_page' => ['nullable', 'string', 'max:35'],
+            'avatar' => ['nullable', new CheckFiles],
             'password' => ['required', 'confirmed', Password::defaults()],
         ];
     }

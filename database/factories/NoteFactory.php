@@ -20,7 +20,7 @@ class NoteFactory extends Factory
         return [
             'author_id' => User::all()->random()->id,
             'parent_id' => null,
-            'content' => fake()->paragraphs(rand(2, 5), true)
+            'content' => fake()->realText(800)
         ];
     }
 

@@ -2,15 +2,24 @@
 
 return [
     'users' => [
-        'seeder' => ['count_rows' => 5],
+        'seeder' => [
+            'count_rows' => 5,
+            'fake_images_id' => [
+                433,
+                996,
+                1027,
+                338,
+                237
+            ]
+        ],
         'files' => [
             'image' => [
                 'relation' => 'avatar',
                 'dir' => 'avatars',
                 'file' => [
                     'size' => [
-                        'width' => 320,
-                        'height' => 240
+                        'width' => 70,
+                        'height' => 70
                     ]
                 ],
             ],
@@ -28,8 +37,8 @@ return [
                 'dir' => 'images',
                 'file' => [
                     'size' => [
-                        'width' => 320,
-                        'height' => 240
+                        'width' => 800,
+                        'height' => 600
                     ]
                 ],
             ],

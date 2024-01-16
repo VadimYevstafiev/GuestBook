@@ -10,6 +10,7 @@ use App\Repositories\Contracts\FileRepositoryContract;
 use App\Repositories\Contracts\NoteRepositoryContract;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
