@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Image;
+use App\Models\Note;
+use App\Models\TextFile;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,12 +27,39 @@ class NoteFactory extends Factory
         ];
     }
 
-    public function withParent(int $parent_id): Factory
+    public function withParent(): Factory
     {
-        return $this->state(function(array $attributes) use ($parent_id) {
-            return [
-               'parent_id' => (mt_rand(0,2)) ? $parent_id : null
-            ];
+        return $this->state(function(array $attributes) {
+            return $attributes;
+        })->afterCreating(function(Note &$note) {
+            $parent_id = ($note->id === 1) 
+                ? null
+                : mt_rand(1, $note->id);
+            $note->update(['parent_id' => $parent_id]);
+        });
+    }
+
+    public function withImages(): Factory
+    {
+        return $this->state(function(array $attributes) {
+            return $attributes;
+        })->afterCreating(function(Note $note) {
+            $count = mt_rand(0, 3);
+            for ($i = 0; $i < $count; $i++) {
+                Image::factory()->setData($note);
+            }
+        });
+    }
+
+    public function withTextFiles(): Factory
+    {
+        return $this->state(function(array $attributes) {
+            return $attributes;
+        })->afterCreating(function(Note $note) {
+            $count = mt_rand(0, 2);
+            for ($i = 0; $i < $count; $i++) {
+                TextFile::factory()->setData($note);
+            }
         });
     }
 }

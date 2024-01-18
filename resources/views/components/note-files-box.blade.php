@@ -1,7 +1,5 @@
-<div class="flex w-full ps-9 text-gray-700">
+<div class="flex flex-{{ $direction }} w-full">
    @foreach($files as $file)
-        <div class="m-2">
-            <img src="{{ $file->url }}" class="h-32 ">
-        </div>
+        <x-dynamic-component :component="$file['type']" :url="$file['url']" :$addedClasses :$crashed />
    @endforeach
 </div>

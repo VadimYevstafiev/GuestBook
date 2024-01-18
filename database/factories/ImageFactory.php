@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Fakers\Contracts\ImageFakerContract;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
@@ -25,8 +26,13 @@ class ImageFactory extends Factory
         ];
     }
 
-    public function setData(Model $model, UploadedFile $file)
+    public function setData(Model $model, UploadedFile $file = null)
     {
+        if (is_null($file)) {
+            $faker = app()->make(ImageFakerContract::class);
+            $file =$faker->image();
+        }
+
         $type = explode('/', $file->getClientMimeType());
         $type = array_shift($type);
 

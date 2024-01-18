@@ -66,4 +66,15 @@ return [
     'tinify' => [
         'key' => env('TINIFY_API_KEY', "")
     ],
+    'permission' => [
+        'notes' => [
+            'publish' => 'publish notes',
+            'edit' => 'edit notes',
+            'delete' => 'delete notes',
+        ],
+        'users' => [
+            'edit' => 'edit user',
+            'delete' => 'delete user',
+        ]
+    ]
 ];

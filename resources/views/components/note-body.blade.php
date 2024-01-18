@@ -12,5 +12,7 @@
         <p>{{ $note->content }}</p>
         <p class="pt-2 italic">{{ 'Created at ' . $note->created_at }}</p>
     </div>
-    <x-note-files-box :note="$note" />
+    <div class="h-32 ps-9">
+        <x-note-files-box :$note addedClasses="h-32" :crashed=false direction="row"/>
+    </div>
 </div>

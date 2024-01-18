@@ -3,9 +3,13 @@
 namespace App\Providers;
 
 use App\Models\Image;
+use App\Models\Note;
 use App\Models\TextFile;
+use App\Models\User;
 use App\Observers\ImageObserver;
+use App\Observers\NoteObserver;
 use App\Observers\TextFileObserver;
+use App\Observers\UserObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -25,6 +29,8 @@ class EventServiceProvider extends ServiceProvider
     ];
 
     protected $observers = [
+        User::class => UserObserver::class,
+        Note::class => NoteObserver::class,
         Image::class => ImageObserver::class,
         TextFile::class => TextFileObserver::class
     ];

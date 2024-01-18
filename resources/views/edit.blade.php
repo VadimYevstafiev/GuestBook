@@ -3,10 +3,6 @@
     <script type="module" src="{{ asset('resources/js/components/text_file-remove.js') }}"></script>
 @endpush
 
-@php
-    //dd($note, $note->text_files);
-
-@endphp
 <x-app-layout>
     <div class="flex-1 h-screen overflow-y-auto">
         @include('layouts.navigation')
@@ -31,29 +27,7 @@
 
                 <div class="flex justify-center">
                     <div class="files-wrapper mb-4 w-1/2">
-                        @foreach ($note->images as $image)
-                            @if(Storage::has($image->path))
-                            <div class="relative rounded-lg border border-gray-500 mb-4">
-                                    <img src="{{ $image->url }}" class="card-img-top" style="width: 100%; margin: 0 auto; display: block;">
-                                    <a href="№" 
-                                            class="image-remove my-2 mx-2 py-1 px-1 border-red-500 bg-red-500 hover:bg-red-600 text-white rounded-lg"
-                                            style="position: absolute; top: 0; right: 0"
-                                            data-route="{{ route('ajax.images.delete', $image) }}"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                                </div>
-                            @endif
-                        @endforeach
-
-                        @foreach ($note->text_files as $file)
-                            @if(Storage::has($file->path))
-                                <div class="relative rounded-lg border border-gray-500 mb-4">
-                                    <iframe src="{{ $file->url }}" class="w-full"></iframe>
-                                    <a href="№" 
-                                            class="text_file-remove my-2 mx-2 py-1 px-1 border-red-500 bg-red-500 hover:bg-red-600 text-white rounded-lg"
-                                            style="position: absolute; top: 0; right: 0"
-                                            data-route="{{ route('ajax.text_files.delete', $file) }}"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                                </div>
-                            @endif
-                        @endforeach
+                        <x-note-files-box :note="$note" addedClasses="w-full" :crashed=true direction="col"/>
                     </div>
                 </div>
                 <x-google-recaptha :errors="$errors" />

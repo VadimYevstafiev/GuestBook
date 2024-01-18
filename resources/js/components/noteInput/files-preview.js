@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function(){
                     return function (e) {
                         let child = document.createElement('div');
                         child.classList.add('relative');
-                        child.classList.add('rounded-lg');
                         child.classList.add('border');
                         child.classList.add('border-gray-500');
                         child.classList.add('mb-4');

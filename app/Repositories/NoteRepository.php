@@ -68,6 +68,7 @@ class NoteRepository implements NoteRepositoryContract
 
             $this->detachChilds($note);
             $this->detachImages($note);
+            $this->detachTextFies($note);
 
             $note->delete();            
             DB::commit();
@@ -181,7 +182,7 @@ class NoteRepository implements NoteRepositoryContract
         }
     }
 
-    protected function detachChilds(Note $note): void
+    public function detachChilds(Note $note): void
     {
         if ($note->childs()->exists()) {
             $newParentId = null;
@@ -192,14 +193,14 @@ class NoteRepository implements NoteRepositoryContract
         }
     }
 
-    protected function detachImages(Note $note): void
+    public function detachImages(Note $note): void
     {
         if ($note->images->count() > 0) {
             $note->images->each->delete();
         }
     }
 
-    protected function detachTextFies(Note $note): void
+    public function detachTextFies(Note $note): void
     {
         if ($note->text_files->count() > 0) {
             $note->text_files->each->delete();

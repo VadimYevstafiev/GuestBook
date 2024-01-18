@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Fakers\Contracts\ImageFakerContract;
+use App\Models\Image;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -49,6 +52,18 @@ class UserFactory extends Factory
             return [
                 'email' => $email
             ];
+        });
+    }
+
+    public function withAvatar(): Factory
+    {
+        return $this->state(function(array $attributes) {
+            return $attributes;
+        })->afterCreating(function(User $user) {
+            $faker = app()->make(ImageFakerContract::class);
+            $img = config('custom.users.seeder.fake_images_id')[$user->id - 1];
+            $file =$faker->id($img)->image();
+            Image::factory()->setData($user, $file);
         });
     }
 }

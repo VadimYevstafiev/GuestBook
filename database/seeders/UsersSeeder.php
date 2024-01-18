@@ -16,9 +16,10 @@ class UsersSeeder extends Seeder
         if (!User::where('email', 'test@test.com')->exists()) {
             User::factory()
                 ->withEmail('test@test.com')
+                ->withAvatar()
                 ->create();
             $count--;
         }
-        User::factory($count)->create();
+        User::factory($count)->withAvatar()->create();
     }
 }
