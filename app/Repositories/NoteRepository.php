@@ -8,9 +8,9 @@ use App\Models\Note;
 use App\Models\User;
 use App\Repositories\Contracts\FileRepositoryContract;
 use App\Repositories\Contracts\NoteRepositoryContract;
+use App\Repositories\Traits\HasAttachedFiles;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\DB;
 
 class NoteRepository implements NoteRepositoryContract
 {
+    use HasAttachedFiles;
+
     public function create(CreateNoteRequest $request): bool
     {
         try {
@@ -27,7 +29,7 @@ class NoteRepository implements NoteRepositoryContract
                 ->put('author_id', auth()->user()->id);
 
             $note = Note::create($data->except(['files'])->toArray());
-            $this->attachFiles($note, $data);
+            $this->attachFiles($data->get('files'), $note);
 
             DB::commit();
             return true;
@@ -43,11 +45,10 @@ class NoteRepository implements NoteRepositoryContract
         try {
             DB::beginTransaction();
 
-            $data = collect($request->validated())
-                ->put('author_id', auth()->user()->id);
+            $data = collect($request->validated());
 
             $note->update($data->except(['files'])->toArray());
-            $this->attachFiles($note, $data);
+            $this->attachFiles($data->get('files'), $note);
              
             DB::commit();
             return true;
@@ -67,10 +68,9 @@ class NoteRepository implements NoteRepositoryContract
             $type = $note->getTable();
 
             $this->detachChilds($note);
-            $this->detachImages($note);
-            $this->detachTextFies($note);
+            $this->detachFiles($note);
+            $note->delete(); 
 
-            $note->delete();            
             DB::commit();
 
             $service = app()->make(FileRepositoryContract::class);
@@ -89,7 +89,7 @@ class NoteRepository implements NoteRepositoryContract
         $notes = Note::whereNull('parent_id')
             ->with('author.avatar', 'childs')
             ->get();
-        
+
         $result = [];
         foreach ($notes as $note) {
             $result = array_merge($result, $this->getChilds($note, 0));
@@ -144,16 +144,6 @@ class NoteRepository implements NoteRepositoryContract
             : null;
     }
 
-    public function getNote(string $id): Note
-    {
-        return Note::where('id', $id)
-            ->with('author:id,email,user_name', 
-                'parent.author:id,email,user_name',
-                'images',
-                'text_files')
-            ->first();
-    }
-
     protected function getChilds(Note $note, int $deep): array
     {
         $result = [[
@@ -169,19 +159,6 @@ class NoteRepository implements NoteRepositoryContract
         return $result;
     }
 
-    protected function attachFiles(Note $note, Collection $data): void
-    {
-        if (!is_null($data->get('files'))) {
-            foreach ($data->get('files') as $file) {
-                $type = explode('/', $file->getClientMimeType());
-                $type = array_shift($type);
-
-                $fileRepository = app()->make('fileRepository-selector-' . $type);
-                $fileRepository->attach($note, $type, $file);
-            }
-        }
-    }
-
     public function detachChilds(Note $note): void
     {
         if ($note->childs()->exists()) {
@@ -190,20 +167,6 @@ class NoteRepository implements NoteRepositoryContract
                 $newParentId = $note->parent()->first()->id;
             }
             $note->childs()->update(['parent_id' => $newParentId]);
-        }
-    }
-
-    public function detachImages(Note $note): void
-    {
-        if ($note->images->count() > 0) {
-            $note->images->each->delete();
-        }
-    }
-
-    public function detachTextFies(Note $note): void
-    {
-        if ($note->text_files->count() > 0) {
-            $note->text_files->each->delete();
         }
     }
 }

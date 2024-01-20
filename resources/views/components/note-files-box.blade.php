@@ -1,5 +1,5 @@
 <div class="flex flex-{{ $direction }} w-full">
    @foreach($files as $file)
-        <x-dynamic-component :component="$file['type']" :url="$file['url']" :$addedClasses :$crashed />
+        <x-dynamic-component :component="$file['type']" :url="$file['url']" :model="$file['model']" :$addedClasses :$crashed />
    @endforeach
 </div>

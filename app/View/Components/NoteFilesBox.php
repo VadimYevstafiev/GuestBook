@@ -33,10 +33,11 @@ class NoteFilesBox extends Component
             $this->files = $this->files->concat(
                 call_user_func([$note, $relation['relation']])
                 ->get()
-                ->map(function($item) use($key)  {
+                ->map(function($item) use($note, $key)  {
                     return [
                         'type' => str_replace('_', '-', $key) . '-box',
-                        'url' => $item->url
+                        'url' => $item->url,
+                        'model' => $item->id
                     ];
             }));
         }

@@ -11,7 +11,10 @@ use Illuminate\Http\Request;
 
 class NotesController extends Controller
 {
-    public function __construct(protected NoteRepositoryContract $repository) {}
+    public function __construct(protected NoteRepositoryContract $repository)
+    {
+        $this->authorizeResource(Note::class, 'note');
+    }
 
     public function home(HomeRequest $request)
     {   
@@ -41,17 +44,15 @@ class NotesController extends Controller
             : redirect()->back()->withInput();
     }
 
-    public function edit(string $id)
+    public function edit(Note $note)
     {
-        $note = $this->repository->getNote($id);
-        
         return view('edit', compact('note'));
     }
 
     public function update(UpdateNoteRequest $request, Note $note)
     {
         return $this->repository->update($request, $note)
-        ? redirect()->route('edit', $note)
+        ? redirect()->route('home')
         : redirect()->back()->withInput();
     }
 

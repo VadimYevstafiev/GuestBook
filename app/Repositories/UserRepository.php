@@ -6,29 +6,30 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Repositories\Contracts\UserRepositoryContract;
 use App\Models\User;
 use App\Repositories\Contracts\FileRepositoryContract;
+use App\Repositories\Traits\HasAttachedFiles;
 use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Traits\HasRoles;
 
 class UserRepository implements UserRepositoryContract
 {
+    use HasRoles, HasAttachedFiles;
+
     public function store(RegisterRequest $request): bool
     {
+
         try {
             DB::beginTransaction();
 
-            $fields = $request->validated();
+            $fields = collect($request->validated());
             $fields['password'] = Hash::make($fields['password']);
-            $avatar = $fields['avatar'];
-            unset($fields['avatar']);
 
-            $user = User::create($fields);
-            $type = explode('/', $avatar->getClientMimeType());
-            $type = array_shift($type);
-            $fileRepository = app()->make('fileRepository-selector-' . $type);
-            $fileRepository->attach($user, $type, $avatar);
+            $user = User::create($fields->except(['files'])->toArray());
+            $user->assignRole('user');
+            $this->attachFile($fields['avatar'], $user);
 
             DB::commit();
 
@@ -51,9 +52,9 @@ class UserRepository implements UserRepositoryContract
             $id = $user->id;
             $type = $user->getTable();
 
-            $user->avatar()->delete();
+            $this->detachFiles($user);
+            $user->delete();
 
-            $user->delete();            
             DB::commit();
 
             $service = app()->make(FileRepositoryContract::class);

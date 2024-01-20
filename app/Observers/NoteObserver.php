@@ -8,10 +8,7 @@ use App\Repositories\Contracts\NoteRepositoryContract;
 
 class NoteObserver
 {
-    public function __construct(public NoteRepositoryContract $repository)
-    {
-        
-    }
+    public function __construct(public NoteRepositoryContract $repository) {}
     /**
      * Handle the Note "deleted" event.
      */
@@ -21,8 +18,7 @@ class NoteObserver
         $type = $note->getTable();
 
         $this->repository->detachChilds($note);
-        $this->repository->detachImages($note);
-        $this->repository->detachTextFies($note);
+        $this->repository->detachFiles($note);
 
         $service = app()->make(FileRepositoryContract::class);
         $service->deleteDirectories($type, $id);

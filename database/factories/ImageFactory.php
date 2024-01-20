@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Fakers\Contracts\ImageFakerContract;
+use App\Repositories\Traits\HasAttachedFiles;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
@@ -12,6 +13,7 @@ use Illuminate\Http\UploadedFile;
  */
 class ImageFactory extends Factory
 {
+    use HasAttachedFiles;
     /**
      * Define the model's default state.
      *
@@ -30,14 +32,9 @@ class ImageFactory extends Factory
     {
         if (is_null($file)) {
             $faker = app()->make(ImageFakerContract::class);
-            $file =$faker->image();
+            $file = $faker->image();
         }
-
-        $type = explode('/', $file->getClientMimeType());
-        $type = array_shift($type);
-
-        $fileRepository = app()->make('fileRepository-selector-' . $type);
-        $fileRepository->attach($model, $type, $file);
+        $this->attachFile($file, $model);
     }
 
 }

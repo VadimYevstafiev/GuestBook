@@ -23,11 +23,5 @@ interface NoteRepositoryContract
 
     public function getParent(Request $request): ?Note;
 
-    public function getNote(string $id): Note;
-
     public function detachChilds(Note $note): void;
-
-    public function detachImages(Note $note): void;
-
-    public function detachTextFies(Note $note): void;
 }

@@ -23,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('text_files', function (Blueprint $table) {
-            //
+            $table->dropForeign(['note_id']);
+            $table->foreign('note_id')->references('id')->on('notes');
         });
     }
 };

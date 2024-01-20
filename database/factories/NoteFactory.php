@@ -34,7 +34,7 @@ class NoteFactory extends Factory
         })->afterCreating(function(Note &$note) {
             $parent_id = ($note->id === 1) 
                 ? null
-                : mt_rand(1, $note->id);
+                : ((mt_rand(0,2)) ? mt_rand(1, ($note->id - 1)) : null);
             $note->update(['parent_id' => $parent_id]);
         });
     }

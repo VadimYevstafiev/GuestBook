@@ -14,6 +14,7 @@ class ImageBox extends Component
      */
     public function __construct(
         public string $url,
+        public string $model,
         public string $addedClasses,
         public bool $crashed = false
     ) {}

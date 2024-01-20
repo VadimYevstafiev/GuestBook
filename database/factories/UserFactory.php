@@ -8,12 +8,14 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
 class UserFactory extends Factory
 {
+    use HasRoles;
     /**
      * The current password being used by the factory.
      */
@@ -64,6 +66,13 @@ class UserFactory extends Factory
             $img = config('custom.users.seeder.fake_images_id')[$user->id - 1];
             $file =$faker->id($img)->image();
             Image::factory()->setData($user, $file);
+        });
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function(User $user) {
+            $user->assignRole('user');
         });
     }
 }
