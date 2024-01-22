@@ -23,7 +23,10 @@ class FileRepository implements FileRepositoryContract
             throw new Exception($model::class . "does not have a {$relation} relation");
 
         call_user_func([$model, $relation])
-            ->create(['path' => $this->service->upload($file, $path)]);
+            ->create([
+                'name' => $file->getClientOriginalName(),
+                'path' => $this->service->upload($file, $path)
+            ]);
     }
 
     public function deleteDirectories(string $type, int $id): void

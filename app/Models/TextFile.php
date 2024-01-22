@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasUrl;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TextFile extends Model
 {
-    use HasFactory, HasUrl;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -17,6 +16,7 @@ class TextFile extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'name',
         'path',
         'note_id',
     ];

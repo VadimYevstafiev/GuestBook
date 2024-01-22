@@ -36,8 +36,7 @@ class NoteFilesBox extends Component
                 ->map(function($item) use($note, $key)  {
                     return [
                         'type' => str_replace('_', '-', $key) . '-box',
-                        'url' => $item->url,
-                        'model' => $item->id
+                        'model' => $item
                     ];
             }));
         }

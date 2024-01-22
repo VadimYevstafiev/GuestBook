@@ -2,9 +2,9 @@
 
 namespace App\View\Components;
 
+use App\Models\Image;
 use Closure;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\View\Component;
 
 class ImageBox extends Component
@@ -13,8 +13,7 @@ class ImageBox extends Component
      * Create a new component instance.
      */
     public function __construct(
-        public string $url,
-        public string $model,
+        public Image $model,
         public string $addedClasses,
         public bool $crashed = false
     ) {}

@@ -87,7 +87,7 @@ class NoteRepository implements NoteRepositoryContract
     public function index(int $perPage, Request $request): LengthAwarePaginator
     {
         $notes = Note::whereNull('parent_id')
-            ->with('author.avatar', 'childs')
+            ->with('author.avatar', 'childs', 'images', 'text_files')
             ->get();
 
         $result = [];

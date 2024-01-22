@@ -13,13 +13,13 @@ use App\Repositories\NoteRepository;
 use App\Repositories\UserRepository;
 use App\Services\Contracts\FileStorageServiceContract;
 use App\Services\FileStorageService;
+use App\Services\TextFileStorageService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
     public array $bindings = [
         NoteRepositoryContract::class => NoteRepository::class,
-        FileStorageServiceContract::class => FileStorageService::class,
         FileRepositoryContract::class => FileRepository::class,
         UserRepositoryContract::class => UserRepository::class,
     ];
@@ -34,11 +34,11 @@ class AppServiceProvider extends ServiceProvider
         }
 
         $this->app->bind('fileRepository-selector-image', function() {
-            return new ImageRepository($this->app->make(FileStorageServiceContract::class));
+            return new ImageRepository(new FileStorageService());
         });
 
         $this->app->bind('fileRepository-selector-text', function() {
-            return new FileRepository($this->app->make(FileStorageServiceContract::class));
+            return new FileRepository(new TextFileStorageService());
         });
     }
 

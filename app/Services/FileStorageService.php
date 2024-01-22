@@ -12,33 +12,23 @@ class FileStorageService implements FileStorageServiceContract
 {
     public function upload(UploadedFile $file, string $additionalPath = ''): string
     {
-        list($content, $extension) = $this->getContent($file);
-
         $additionalPath = !empty($additionalPath) ? "{$additionalPath}/" : '';
 
-        $filePath = "public/{$additionalPath}" . Str::random() . '_' . time() . '.' . $extension;
+        $filePath = "public/{$additionalPath}" . Str::random() . '_' . time() . '.' . $file->getClientOriginalExtension();
 
-        //local disk
-        Storage::put($filePath, $content);
-
-        //AWS
-        // Storage::disk('s3')->put($filePath, $content);
-        // Storage::setVisibility($filePath, 'public');
+        Storage::put($filePath, $this->getContent($file));
+        Storage::setVisibility($filePath, 'public');
 
         return $filePath;
     }
 
     public function remove(string $file): void
     {
-        //local disk
         Storage::delete($file);
-
-        //AWS
-        // Storage::disk('s3')->delete($file);
     }
 
-    protected function getContent(UploadedFile $file): array
+    protected function getContent(UploadedFile $file): string
     {
-        return array(File::get($file), $file->getClientOriginalExtension());
+        return File::get($file);
     }
 }
