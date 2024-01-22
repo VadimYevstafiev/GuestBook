@@ -1,66 +1,60 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+This is my implementation of the GuestBook test job.
+Implemented:
+1. There is a main page ('Home') on which notes are displayed.
+    Messages are divided into pages of 25 notes.
+    The main page is available for viewing by both authorized users and unauthorized visitors.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+2. For each note, authorized users can write as many comments (notes) as they want (the 'Add note' button on notes).
+    Authorized users can also make new notes ('Send note' button).
 
-## About Laravel
+3. Heading notes (those that are not comments) are displayed on the 'Heads' page, with the ability to sort by the following fields:
+    User Name, Email, and Created_at (date added), both in descending and reverse order.
+    The 'Heads' page is only viewable by authorized users.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+4. There are two roles for authorized users: 'admin' and 'user'.
+    'admin' has the permissions:
+       - create new notes;
+       - edit own notes;
+       - delete notes, both your own and those of other users.
+    'user' has the permissions:
+       - create new notes;
+       - edit own notes;
+       - delete own notes.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+5. Anyone can register in the application as 'user', or log in as 'admin' (email 'admin@admin.com', password 'test1234') or 'user' role (email 'test@test.com' , password 'test1234').
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+6. The contetnt of created or edited notes is checked for the presence of HTML tags (allowed tags <a href=”” title=””> </a> <code> </code> <i> </i> <strong> </strong>), as well as for the presence of unclosed tags.
 
-## Learning Laravel
+7. The users can attach files to created and edited note:
+       - images (allowed extensions - 'jpg', 'jpeg', 'gif', 'png');
+       - text files (valid extension - 'txt, valid size no more than 100 kB).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+8. When editing messages, you can delete previously attached files.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+In order to deploy the project, you must:
+1. Open a terminal in the root folder of the project.
+2. Copy the .env.example file and rename it to .env
+   Make sure there are no leading or trailing spaces in the .env name.
+3. Install composer (if it is not installed) according to the guide https://getcomposer.org/download/.
+4. Install Laravel Sail (https://laravel.com/docs/10.x/sail#main-content).
+    Enter the commands in the terminal:
+     composer require laravel/sail --dev
+     php artisan sail:install
 
-## Laravel Sponsors
+     When prompted "Which services would you like to install?" select mysql
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+     ./vendor/bin/sail up -d --build
+     ./vendor/bin/sail artisan key:generate
+     ./vendor/bin/sail artisan storage:link
+    ./vendor/bin/sail artisan migrate --seed
 
-### Premium Partners
+5. Install Laravel Breeze (https://laravel.com/docs/10.x/starter-kits#laravel-breeze).
+    Enter the commands in the terminal:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+     ./vendor/bin/sail composer require laravel/breeze --dev
+     ./vendor/bin/sail npm install
+     ./vendor/bin/sail npm run dev (recommended in another tab)
 
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+6. Open http://localhost/ in your browser.
+7. Register ('Register') or log in (email 'admin@admin.com', password 'test1234' or email 'test@test.com', password 'test1234').

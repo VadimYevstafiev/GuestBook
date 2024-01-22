@@ -22,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
         NoteRepositoryContract::class => NoteRepository::class,
         FileRepositoryContract::class => FileRepository::class,
         UserRepositoryContract::class => UserRepository::class,
+        FileStorageServiceContract::class =>FileStorageService::class
     ];
     /**
      * Register any application services.
