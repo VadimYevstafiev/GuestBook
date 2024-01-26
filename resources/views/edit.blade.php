@@ -1,8 +1,3 @@
-@push('scripts')
-    <script type="module" src="{{ asset('resources/js/components/image-remove.js') }}"></script>
-    <script type="module" src="{{ asset('resources/js/components/text_file-remove.js') }}"></script>
-@endpush
-
 <x-app-layout>
     <div class="flex-1 h-screen overflow-y-auto">
         @include('layouts.navigation')

@@ -1,9 +1,4 @@
-@push('scripts')
-    <script type="module" src="{{ asset('resources/js/components/noteInput/buttons.js') }}"></script>
-    <script type="module" src="{{ asset('resources/js/components/noteInput/files-preview.js') }}"></script>
-@endpush
-
-<div class="mb-4 w-full bg-gray-50 rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600">
+<div id="mote-input" class="mb-4 w-full bg-gray-50 rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600">
     <div class="flex justify-between items-center py-2 px-3 border-b dark:border-gray-600">
         <div class="flex flex-wrap items-center divide-gray-300 sm:divide-x dark:divide-gray-600">
             <div class="flex items-center space-x-1 sm:pr-4">

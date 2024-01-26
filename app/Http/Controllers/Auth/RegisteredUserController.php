@@ -25,7 +25,7 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(RegisterRequest $request, UserRepositoryContract $repository): RedirectResponse
-    {
+    {   
         return $repository->store($request) 
             ? redirect(RouteServiceProvider::HOME)
             : redirect()->back()->withInput();

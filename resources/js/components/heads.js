@@ -1,6 +1,9 @@
-const button = document.getElementById('setting');
-const dropdown = document.getElementById('dropdown-content');
+const btn = document.querySelector('#setting');
+const sort = document.querySelector('#sort-selector');
 
-button.addEventListener('click', function () {
-dropdown.classList.toggle('hidden');
-});  
+if (btn !== null) {
+    btn.addEventListener('click', function () {
+        sort.classList.toggle('hidden');
+    });
+}
+ 

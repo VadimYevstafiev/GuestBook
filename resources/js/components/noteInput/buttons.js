@@ -36,22 +36,24 @@ class linklTag extends Tag{
     }
 }
 
-const italicButton = document.getElementById('italic');
-italicButton.addEventListener('click', function () {
-    (new simpleTag ('i')).wrap();
-});
+if (document.querySelector('#mote-input') !== null) {
+    const italicButton = document.getElementById('italic');
+    italicButton.addEventListener('click', function () {
+        (new simpleTag ('i')).wrap();
+    });
 
-const strongButton = document.getElementById('strong');
-strongButton.addEventListener('click', function () {
-    (new simpleTag ('strong')).wrap();
-});
+    const strongButton = document.getElementById('strong');
+    strongButton.addEventListener('click', function () {
+        (new simpleTag ('strong')).wrap();
+    });
 
-const codeButton = document.getElementById('code');
-codeButton.addEventListener('click', function () {
-    (new simpleTag ('code')).wrap();
-}); 
+    const codeButton = document.getElementById('code');
+    codeButton.addEventListener('click', function () {
+        (new simpleTag ('code')).wrap();
+    }); 
 
-const linkButton = document.getElementById('link');
-linkButton.addEventListener('click', function () {
-    (new linklTag ()).wrap();
-});
+    const linkButton = document.getElementById('link');
+    linkButton.addEventListener('click', function () {
+        (new linklTag ()).wrap();
+    });
+}
